@@ -1,225 +1,266 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 360" width="100%" height="100%" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 340" width="100%" height="100%" fill="none">
   <defs>
-    <!-- Radial shadow under tray -->
-    <radialGradient id="trayShadow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#7c2d12" stop-opacity="0.45" />
+    <!-- Soft contact shadow under the white porcelain platter -->
+    <radialGradient id="trayGroundShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#431407" stop-opacity="0.38" />
+      <stop offset="65%" stop-color="#7c2d12" stop-opacity="0.16" />
       <stop offset="100%" stop-color="#7c2d12" stop-opacity="0" />
     </radialGradient>
 
-    <!-- Tray gradients -->
-    <linearGradient id="trayRimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#dc2626" />
-      <stop offset="50%" stop-color="#b91c1c" />
-      <stop offset="100%" stop-color="#7f1d1d" />
+    <!-- Porcelain White Serving Tray gradients -->
+    <linearGradient id="trayEdgeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="55%" stop-color="#e2e8f0" />
+      <stop offset="100%" stop-color="#94a3b8" />
     </linearGradient>
     <linearGradient id="trayInnerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#991b1b" />
-      <stop offset="100%" stop-color="#dc2626" />
+      <stop offset="0%" stop-color="#cbd5e1" />
+      <stop offset="35%" stop-color="#f1f5f9" />
+      <stop offset="100%" stop-color="#ffffff" />
     </linearGradient>
 
-    <!-- Burger bun gradients -->
-    <linearGradient id="bunTopGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#f59e0b" />
-      <stop offset="50%" stop-color="#d97706" />
-      <stop offset="100%" stop-color="#b45309" />
+    <!-- Fries Carton (Deep Charcoal Slate) & Golden Fries -->
+    <linearGradient id="slateCartonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="50%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
     </linearGradient>
-    <linearGradient id="bunBottomGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#d97706" />
-      <stop offset="100%" stop-color="#92400e" />
+    <linearGradient id="fryGoldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef9c3" />
+      <stop offset="45%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#eab308" />
     </linearGradient>
-    <linearGradient id="pattyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#78350f" />
-      <stop offset="100%" stop-color="#451a03" />
-    </linearGradient>
-
-    <!-- Fries gradients -->
-    <linearGradient id="friesBoxGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#ef4444" />
-      <stop offset="100%" stop-color="#b91c1c" />
-    </linearGradient>
-    <linearGradient id="fryGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#fde047" />
-      <stop offset="70%" stop-color="#eab308" />
+    <linearGradient id="fryAltGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="65%" stop-color="#facc15" />
       <stop offset="100%" stop-color="#ca8a04" />
     </linearGradient>
 
-    <!-- Drink Cup gradients -->
-    <linearGradient id="cupGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#ef4444" />
-      <stop offset="40%" stop-color="#f87171" />
-      <stop offset="100%" stop-color="#b91c1c" />
+    <!-- Crisp White Drink Cup + Cool Mint-Teal Sleeve -->
+    <linearGradient id="whiteCupGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="35%" stop-color="#ffffff" />
+      <stop offset="75%" stop-color="#f1f5f9" />
+      <stop offset="100%" stop-color="#cbd5e1" />
+    </linearGradient>
+    <linearGradient id="tealSleeveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#14b8a6" />
+      <stop offset="38%" stop-color="#2dd4bf" />
+      <stop offset="78%" stop-color="#0d9488" />
+      <stop offset="100%" stop-color="#0f766e" />
     </linearGradient>
 
-    <!-- Pizza slice gradient -->
-    <linearGradient id="pizzaCrust" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f59e0b" />
+    <!-- Gourmet Honey-Brioche Burger -->
+    <linearGradient id="bunTopGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="30%" stop-color="#fcd34d" />
+      <stop offset="75%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <linearGradient id="bunBottomGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="55%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#92400e" />
+    </linearGradient>
+    <linearGradient id="pattyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#57260b" />
+      <stop offset="55%" stop-color="#3b1806" />
+      <stop offset="100%" stop-color="#271004" />
+    </linearGradient>
+    <linearGradient id="cheeseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a" />
+      <stop offset="100%" stop-color="#facc15" />
+    </linearGradient>
+    <linearGradient id="lettuceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80" />
+      <stop offset="65%" stop-color="#22c55e" />
+      <stop offset="100%" stop-color="#15803d" />
+    </linearGradient>
+
+    <!-- Creamy Mozzarella Pizza Slice -->
+    <linearGradient id="pizzaCrustGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde68a" />
+      <stop offset="55%" stop-color="#f59e0b" />
       <stop offset="100%" stop-color="#b45309" />
     </linearGradient>
-    <linearGradient id="pizzaCheese" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a" />
-      <stop offset="60%" stop-color="#facc15" />
-      <stop offset="100%" stop-color="#eab308" />
+    <linearGradient id="pizzaCheeseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fefce8" />
+      <stop offset="50%" stop-color="#fef08a" />
+      <stop offset="100%" stop-color="#facc15" />
     </linearGradient>
   </defs>
 
-  <!-- Sparkle Accents -->
-  <g opacity="0.9">
-    <path d="M 125 75 Q 127 83 135 85 Q 127 87 125 95 Q 123 87 115 85 Q 123 83 125 75 Z" fill="#fde047" />
-    <path d="M 310 65 Q 312 71 318 73 Q 312 75 310 81 Q 308 75 302 73 Q 308 71 310 65 Z" fill="#ffffff" />
-    <circle cx="100" cy="110" r="3" fill="#fef08a" />
-    <circle cx="330" cy="115" r="3.5" fill="#fef08a" />
-    <!-- Rays above burger -->
-    <line x1="205" y1="70" x2="205" y2="52" stroke="#fde047" stroke-width="3" stroke-linecap="round" />
-    <line x1="225" y1="74" x2="238" y2="58" stroke="#fde047" stroke-width="3" stroke-linecap="round" />
-    <line x1="185" y1="74" x2="172" y2="58" stroke="#fde047" stroke-width="3" stroke-linecap="round" />
+  <!-- Crisp White & Cream-Gold Sparkle Accents -->
+  <g opacity="0.95">
+    <path d="M 118 44 Q 120 53 129 55 Q 120 57 118 66 Q 116 57 107 55 Q 116 53 118 44 Z" fill="#fef9c3" />
+    <path d="M 314 38 Q 316 45 323 47 Q 316 49 314 56 Q 312 49 305 47 Q 312 45 314 38 Z" fill="#ffffff" />
+    <circle cx="84" cy="80" r="3" fill="#ffffff" opacity="0.85" />
+    <circle cx="338" cy="88" r="3.5" fill="#fef08a" opacity="0.9" />
+    <!-- Fresh burst rays above burger -->
+    <line x1="210" y1="68" x2="210" y2="48" stroke="#fef9c3" stroke-width="3" stroke-linecap="round" />
+    <line x1="230" y1="73" x2="243" y2="57" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+    <line x1="190" y1="73" x2="177" y2="57" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
   </g>
 
-  <!-- Ground / Platter Shadow -->
-  <ellipse cx="210" cy="272" rx="175" ry="32" fill="url(#trayShadow)" />
-
-  <!-- RED SERVING TRAY -->
-  <!-- Outer rim -->
-  <ellipse cx="210" cy="254" rx="160" ry="30" fill="url(#trayRimGrad)" />
-  <ellipse cx="210" cy="252" rx="156" ry="28" fill="#991b1b" />
-  <!-- Inner dish surface -->
-  <ellipse cx="210" cy="250" rx="146" ry="24" fill="url(#trayInnerGrad)" />
-  <!-- Rim highlight -->
-  <path d="M 68 252 A 146 24 0 0 0 352 252" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" fill="none" />
+  <!-- Ground Contact Shadow -->
+  <ellipse cx="210" cy="274" rx="172" ry="28" fill="url(#trayGroundShadow)" />
 
   <!-- ==============================================
-       ITEM 1: FRENCH FRIES (Left side of tray)
+       CRISP PORCELAIN WHITE SERVING PLATTER
        ============================================== -->
-  <g transform="translate(68, 86)">
-    <!-- Back Fries -->
-    <rect x="24" y="2" width="9" height="60" rx="2.5" fill="url(#fryGrad)" transform="rotate(-14 28 32)" />
-    <rect x="36" y="-6" width="9" height="66" rx="2.5" fill="url(#fryGrad)" transform="rotate(-6 40 30)" />
-    <rect x="48" y="-12" width="10" height="72" rx="2.5" fill="url(#fryGrad)" transform="rotate(3 53 28)" />
-    <rect x="60" y="-8" width="9" height="68" rx="2.5" fill="url(#fryGrad)" transform="rotate(10 64 30)" />
-    <rect x="70" y="4" width="9" height="56" rx="2.5" fill="url(#fryGrad)" transform="rotate(18 74 34)" />
-    <!-- Front row fries -->
-    <rect x="30" y="16" width="8" height="48" rx="2" fill="#fef08a" transform="rotate(-10 34 40)" />
-    <rect x="42" y="10" width="8" height="52" rx="2" fill="#fde047" transform="rotate(1 46 36)" />
-    <rect x="54" y="12" width="8" height="50" rx="2" fill="#fde047" transform="rotate(8 58 37)" />
+  <!-- Outer Beveled Tray Edge -->
+  <ellipse cx="210" cy="256" rx="164" ry="29" fill="url(#trayEdgeGrad)" />
+  <!-- Crisp White Top Rim -->
+  <ellipse cx="210" cy="250" rx="162" ry="27" fill="#ffffff" />
+  <!-- Recessed Porcelain Dish Surface -->
+  <ellipse cx="210" cy="249" rx="146" ry="21" fill="url(#trayInnerGrad)" />
+  <!-- Subtle Rim Highlight -->
+  <path d="M 60 251 A 150 23 0 0 0 360 251" stroke="#ffffff" stroke-width="2" opacity="0.9" fill="none" />
 
-    <!-- Red Fry Carton Box -->
-    <path d="M 18 52 L 28 116 Q 52 120 78 116 L 88 52 Q 53 66 18 52 Z" fill="url(#friesBoxGrad)" />
-    <!-- Box Front Arc highlight -->
-    <path d="M 28 58 Q 53 68 78 58" stroke="rgba(255,255,255,0.25)" stroke-width="2" fill="none" />
-    <!-- White CanteenGo Cloche icon on carton -->
-    <circle cx="53" cy="90" r="14" fill="#ffffff" opacity="0.95" />
-    <path d="M 46 93 C 46 87 60 87 60 93 Z" fill="#ef4444" />
-    <line x1="44" y1="94" x2="62" y2="94" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round" />
-    <circle cx="53" cy="85.5" r="1.5" fill="#ef4444" />
-  </g>
+  <!-- Soft Item Shadows on the White Tray -->
+  <ellipse cx="111" cy="236" rx="32" ry="7" fill="#94a3b8" opacity="0.32" />
+  <ellipse cx="308" cy="241" rx="33" ry="7" fill="#94a3b8" opacity="0.32" />
+  <ellipse cx="212" cy="252" rx="58" ry="11" fill="#94a3b8" opacity="0.38" />
+  <ellipse cx="120" cy="249" rx="34" ry="7" fill="#94a3b8" opacity="0.28" />
 
   <!-- ==============================================
-       ITEM 2: SODA CUP WITH STRAW (Right side of tray)
+       ITEM 1: CRISPY GOLDEN FRIES IN SLATE CARTON (Left)
        ============================================== -->
-  <g transform="translate(262, 90)">
-    <!-- Striped Straw sticking out -->
-    <path d="M 40 -12 L 48 30" stroke="#f8fafc" stroke-width="7" stroke-linecap="round" />
-    <path d="M 39 -14 L 30 -24" stroke="#f8fafc" stroke-width="7" stroke-linecap="round" />
-    <path d="M 33 -20 L 37 -16" stroke="#ef4444" stroke-width="7" stroke-linecap="round" />
-    <path d="M 43 0 L 45 8" stroke="#ef4444" stroke-width="7" />
-    <path d="M 46 16 L 47 24" stroke="#ef4444" stroke-width="7" />
+  <g transform="translate(58, 92)">
+    <!-- Dark Slate Inner Back Pocket -->
+    <path d="M 18 62 Q 53 50 88 62 L 84 72 Q 53 64 22 72 Z" fill="#0f172a" />
 
-    <!-- Cup Lid -->
-    <ellipse cx="48" cy="30" rx="36" ry="9" fill="#f8fafc" />
-    <ellipse cx="48" cy="27" rx="32" ry="7" fill="#e2e8f0" />
-    <rect x="14" y="28" width="68" height="4" rx="2" fill="#cbd5e1" />
+    <!-- Back Row Fries -->
+    <rect x="23" y="8" width="9" height="64" rx="3" fill="url(#fryAltGrad)" transform="rotate(-14 27 40)" />
+    <rect x="35" y="-2" width="9.5" height="72" rx="3" fill="url(#fryGoldGrad)" transform="rotate(-6 39 34)" />
+    <rect x="48" y="-8" width="10" height="78" rx="3" fill="url(#fryAltGrad)" transform="rotate(2 53 32)" />
+    <rect x="61" y="-3" width="9.5" height="73" rx="3" fill="url(#fryGoldGrad)" transform="rotate(10 65 34)" />
+    <rect x="72" y="10" width="9" height="60" rx="3" fill="url(#fryAltGrad)" transform="rotate(17 76 40)" />
 
-    <!-- Red Cup Body -->
-    <path d="M 18 32 L 26 122 Q 48 127 70 122 L 78 32 Q 48 37 18 32 Z" fill="url(#cupGrad)" />
+    <!-- Front Row Fries -->
+    <rect x="29" y="22" width="8.5" height="52" rx="2.5" fill="#fef9c3" transform="rotate(-9 33 48)" />
+    <rect x="42" y="14" width="9" height="58" rx="2.5" fill="url(#fryGoldGrad)" transform="rotate(0 46 43)" />
+    <rect x="55" y="18" width="8.5" height="54" rx="2.5" fill="#fef9c3" transform="rotate(8 59 45)" />
 
-    <!-- Cloche Badge on Cup -->
-    <circle cx="48" cy="76" r="13" fill="#ffffff" opacity="0.92" />
-    <path d="M 42 79 C 42 73 54 73 54 79 Z" fill="#ef4444" />
-    <line x1="40" y1="80" x2="56" y2="80" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round" />
-    <circle cx="48" cy="72" r="1.2" fill="#ef4444" />
+    <!-- Deep Slate Carton Body -->
+    <path d="M 16 60 L 28 142 Q 53 147 78 142 L 90 60 Q 53 75 16 60 Z" fill="url(#slateCartonGrad)" />
+    <!-- Crisp White Top Trim Lip -->
+    <path d="M 16 60 Q 53 75 90 60 L 89 66 Q 53 81 17 66 Z" fill="#f8fafc" />
+    <!-- Subtle Vertical Carton Highlight -->
+    <path d="M 28 70 L 35 138" stroke="rgba(255,255,255,0.12)" stroke-width="3" stroke-linecap="round" />
+
+    <!-- Crisp White CanteenGo Cloche Emblem on Slate Carton -->
+    <circle cx="53" cy="92" r="14" fill="#ffffff" />
+    <path d="M 46 95 C 46 88.5 60 88.5 60 95 Z" fill="#ea580c" />
+    <line x1="44" y1="96.5" x2="62" y2="96.5" stroke="#ea580c" stroke-width="1.8" stroke-linecap="round" />
+    <circle cx="53" cy="87" r="1.5" fill="#ea580c" />
   </g>
 
   <!-- ==============================================
-       ITEM 3: JUICY BURGER (Center Front)
+       ITEM 2: CRISP WHITE CUP & MINT-TEAL SLEEVE (Right)
        ============================================== -->
-  <g transform="translate(136, 122)">
-    <!-- Burger Bottom Bun -->
-    <ellipse cx="74" cy="116" rx="54" ry="16" fill="url(#bunBottomGrad)" />
+  <g transform="translate(260, 96)">
+    <!-- White & Mint-Teal Striped Straw (Continuous smooth joint) -->
+    <path d="M 29 -17 L 40 -6 L 48 40" stroke="#ffffff" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <path d="M 32 -14 L 40 -6 L 47 34" stroke="#0d9488" stroke-width="7.5" stroke-dasharray="7 8" stroke-linecap="butt" stroke-linejoin="round" fill="none" />
 
-    <!-- Patty -->
-    <rect x="18" y="96" width="112" height="18" rx="8" fill="url(#pattyGrad)" />
-    <!-- Patty grill highlight -->
-    <rect x="22" y="99" width="104" height="4" rx="2" fill="#92400e" opacity="0.7" />
+    <!-- Crisp White Cup Body -->
+    <path d="M 18 42 L 26 140 Q 48 145 70 140 L 78 42 Q 48 47 18 42 Z" fill="url(#whiteCupGrad)" />
 
-    <!-- Melted Cheese Layer (yellow draped triangles) -->
-    <path d="M 18 94 L 130 94 L 126 104 L 110 98 L 94 112 L 80 98 L 62 108 L 44 98 L 30 106 L 22 96 Z" fill="#facc15" />
+    <!-- Cool Mint-Teal Sleeve Wrap -->
+    <path d="M 20 66 Q 48 72 76 66 L 72 117 Q 48 123 24 117 Z" fill="url(#tealSleeveGrad)" />
+    <!-- Subtle Specular Highlight along Left Edge -->
+    <path d="M 24 50 L 30 135" stroke="rgba(255,255,255,0.45)" stroke-width="3" stroke-linecap="round" />
 
-    <!-- Fresh Lettuce (Green ruffle ribbon) -->
-    <path d="M 14 87 Q 26 95 38 88 Q 50 82 62 90 Q 76 96 90 87 Q 104 81 116 89 Q 126 95 134 87 L 130 93 L 18 93 Z" fill="#22c55e" />
-    <path d="M 20 89 Q 34 83 48 91 Q 62 85 76 92 Q 90 86 104 92 Q 118 85 130 91" stroke="#16a34a" stroke-width="2" fill="none" />
+    <!-- Crisp White Cup Lid -->
+    <ellipse cx="48" cy="40" rx="36" ry="9" fill="#f1f5f9" />
+    <ellipse cx="48" cy="36" rx="34" ry="8" fill="#ffffff" />
+    <ellipse cx="48" cy="36" rx="26" ry="5" fill="#e2e8f0" opacity="0.6" />
+    <rect x="13" y="38" width="70" height="4.5" rx="2.2" fill="#cbd5e1" opacity="0.85" />
 
-    <!-- Sliced Tomatoes (red layers peek) -->
-    <rect x="24" y="80" width="46" height="8" rx="4" fill="#dc2626" />
-    <rect x="76" y="80" width="48" height="8" rx="4" fill="#ef4444" />
+    <!-- Crisp White Cloche Badge on Teal Sleeve -->
+    <circle cx="48" cy="92" r="13" fill="#ffffff" />
+    <path d="M 42 95 C 42 89 54 89 54 95 Z" fill="#0d9488" />
+    <line x1="40" y1="96.5" x2="56" y2="96.5" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round" />
+    <circle cx="48" cy="88" r="1.3" fill="#0d9488" />
+  </g>
 
-    <!-- Burger Top Bun (Rounded Dome) -->
-    <path d="M 16 80 C 16 34, 132 34, 132 80 C 132 84, 16 84, 16 80 Z" fill="url(#bunTopGrad)" />
+  <!-- ==============================================
+       ITEM 3: HONEY-BRIOCHE GOURMET BURGER (Center)
+       ============================================== -->
+  <g transform="translate(136, 120)">
+    <!-- Toasted Bottom Bun -->
+    <ellipse cx="74" cy="123" rx="54" ry="15" fill="url(#bunBottomGrad)" />
+    <ellipse cx="74" cy="119" rx="52" ry="12" fill="#fbbf24" opacity="0.35" />
 
-    <!-- Bun Top Highlight -->
-    <ellipse cx="74" cy="50" rx="40" ry="14" fill="rgba(255,255,255,0.2)" />
+    <!-- Char-Grilled Patty -->
+    <rect x="17" y="101" width="114" height="19" rx="9" fill="url(#pattyGrad)" />
+    <!-- Subtle Seared Highlight -->
+    <rect x="23" y="104" width="102" height="4" rx="2" fill="#7c2d12" opacity="0.65" />
 
-    <!-- White Sesame Seeds on top bun -->
-    <g fill="#fef9c3" opacity="0.95">
-      <!-- Row 1 -->
-      <ellipse cx="50" cy="54" rx="2" ry="3.5" transform="rotate(-25 50 54)" />
-      <ellipse cx="68" cy="46" rx="2" ry="3.5" transform="rotate(10 68 46)" />
-      <ellipse cx="88" cy="48" rx="2" ry="3.5" transform="rotate(30 88 48)" />
-      <ellipse cx="102" cy="56" rx="2" ry="3.5" transform="rotate(45 102 56)" />
-      <!-- Row 2 -->
-      <ellipse cx="40" cy="65" rx="2" ry="3.5" transform="rotate(-40 40 65)" />
-      <ellipse cx="58" cy="62" rx="2" ry="3.5" transform="rotate(-5 58 62)" />
-      <ellipse cx="78" cy="60" rx="2" ry="3.5" transform="rotate(15 78 60)" />
-      <ellipse cx="96" cy="64" rx="2" ry="3.5" transform="rotate(35 96 64)" />
-      <!-- Row 3 -->
-      <ellipse cx="48" cy="74" rx="2" ry="3.5" transform="rotate(-15 48 74)" />
-      <ellipse cx="70" cy="72" rx="2" ry="3.5" transform="rotate(5 70 72)" />
-      <ellipse cx="88" cy="73" rx="2" ry="3.5" transform="rotate(25 88 73)" />
-      <ellipse cx="110" cy="70" rx="2" ry="3.5" transform="rotate(50 110 70)" />
+    <!-- Melted Creamy Cheddar Cheese -->
+    <path d="M 18 94 L 130 94 L 126 108 L 110 102 L 95 117 L 80 102 L 62 113 L 44 102 L 30 110 L 21 100 Z" fill="url(#cheeseGrad)" />
+
+    <!-- Crisp Ruffled Emerald Lettuce -->
+    <path d="M 13 89 Q 25 98 38 90 Q 51 83 64 92 Q 77 99 91 89 Q 105 83 118 91 Q 128 97 136 89 L 131 100 L 18 100 Z" fill="url(#lettuceGrad)" />
+    <path d="M 19 92 Q 33 86 48 93 Q 63 87 77 94 Q 91 88 105 94 Q 119 87 131 93" stroke="#86efac" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.7" />
+
+    <!-- Honey-Brioche Top Bun with Crisp Cream-White Rim Separation -->
+    <path d="M 16 86 C 16 36, 132 36, 132 86 C 132 90, 16 90, 16 86 Z" fill="url(#bunTopGrad)" stroke="#fffbeb" stroke-width="1.6" stroke-opacity="0.85" />
+
+    <!-- Soft Specular Gloss on Crown -->
+    <ellipse cx="70" cy="54" rx="38" ry="12" fill="#ffffff" opacity="0.28" />
+
+    <!-- Cream Sesame Seeds -->
+    <g fill="#fffbeb" opacity="0.96">
+      <ellipse cx="48" cy="58" rx="2.1" ry="3.6" transform="rotate(-25 48 58)" />
+      <ellipse cx="67" cy="49" rx="2.1" ry="3.6" transform="rotate(8 67 49)" />
+      <ellipse cx="88" cy="51" rx="2.1" ry="3.6" transform="rotate(28 88 51)" />
+      <ellipse cx="104" cy="60" rx="2.1" ry="3.6" transform="rotate(42 104 60)" />
+      <ellipse cx="38" cy="70" rx="2.1" ry="3.6" transform="rotate(-38 38 70)" />
+      <ellipse cx="57" cy="66" rx="2.1" ry="3.6" transform="rotate(-6 57 66)" />
+      <ellipse cx="78" cy="64" rx="2.1" ry="3.6" transform="rotate(14 78 64)" />
+      <ellipse cx="97" cy="69" rx="2.1" ry="3.6" transform="rotate(34 97 69)" />
+      <ellipse cx="47" cy="79" rx="2.1" ry="3.6" transform="rotate(-14 47 79)" />
+      <ellipse cx="70" cy="77" rx="2.1" ry="3.6" transform="rotate(5 70 77)" />
+      <ellipse cx="89" cy="78" rx="2.1" ry="3.6" transform="rotate(24 89 78)" />
+      <ellipse cx="111" cy="75" rx="2.1" ry="3.6" transform="rotate(48 111 75)" />
     </g>
   </g>
 
   <!-- ==============================================
-       ITEM 4: PIZZA SLICE (Resting on left corner)
+       ITEM 4: CHEESY HERB & OLIVE PIZZA SLICE (Front-Left)
        ============================================== -->
-  <g transform="translate(74, 178) rotate(-18)">
-    <!-- Pizza Shadow -->
-    <polygon points="12,70 65,10 68,70" fill="rgba(0,0,0,0.18)" />
+  <g transform="translate(74, 196) rotate(-10) scale(0.92)">
+    <!-- Soft Drop Shadow onto White Tray -->
+    <polygon points="10,70 64,12 72,68" fill="#64748b" opacity="0.22" />
 
-    <!-- Pizza Crust (Thick Back Arc) -->
-    <path d="M 6 60 Q 38 74 72 66 L 76 56 Q 38 64 4 50 Z" fill="url(#pizzaCrust)" />
+    <!-- Golden Toasted Crust -->
+    <path d="M 6 60 Q 38 74 72 66 L 76 56 Q 38 64 4 50 Z" fill="url(#pizzaCrustGrad)" />
 
-    <!-- Pizza Cheese Body (Triangle slice) -->
-    <path d="M 5 54 L 62 6 Q 66 10 68 16 L 74 60 Q 40 68 5 54 Z" fill="url(#pizzaCheese)" />
+    <!-- Creamy Melted Mozzarella Body -->
+    <path d="M 5 54 L 62 6 Q 66 10 68 16 L 74 60 Q 40 68 5 54 Z" fill="url(#pizzaCheeseGrad)" stroke="#fefce8" stroke-width="1.2" />
 
-    <!-- Melty Cheese dripping line -->
-    <path d="M 62 8 Q 50 32 38 48 Q 24 53 6 54" stroke="#fde047" stroke-width="2.5" fill="none" />
+    <!-- Melty Cheese Pull Highlight -->
+    <path d="M 60 11 Q 48 34 36 49 Q 22 54 8 54" stroke="#ffffff" stroke-width="2" opacity="0.65" stroke-linecap="round" fill="none" />
 
-    <!-- Pepperoni Slices -->
-    <circle cx="34" cy="42" r="7.5" fill="#dc2626" />
-    <circle cx="33" cy="41" r="6" fill="#b91c1c" />
-    <circle cx="32" cy="40" r="1.5" fill="#fca5a5" />
+    <!-- Crisp Black Olive Rings (High-Contrast, Zero Red Clash) -->
+    <g>
+      <circle cx="34" cy="43" r="6.8" fill="#1e293b" />
+      <circle cx="34" cy="43" r="3" fill="#fef08a" />
 
-    <circle cx="54" cy="44" r="7" fill="#dc2626" />
-    <circle cx="53" cy="43" r="5.5" fill="#b91c1c" />
-    <circle cx="52" cy="42" r="1.5" fill="#fca5a5" />
+      <circle cx="55" cy="45" r="6.2" fill="#1e293b" />
+      <circle cx="55" cy="45" r="2.7" fill="#fef08a" />
 
-    <circle cx="48" cy="24" r="6.5" fill="#dc2626" />
-    <circle cx="47" cy="23" r="5" fill="#b91c1c" />
-    <circle cx="46" cy="22" r="1.2" fill="#fca5a5" />
+      <circle cx="48" cy="24" r="5.6" fill="#1e293b" />
+      <circle cx="48" cy="24" r="2.4" fill="#fef08a" />
+    </g>
 
-    <!-- Green herb flakes -->
-    <rect x="22" y="48" width="3" height="1.5" rx="0.5" fill="#15803d" transform="rotate(20 22 48)" />
-    <rect x="42" y="32" width="3" height="1.5" rx="0.5" fill="#15803d" transform="rotate(-35 42 32)" />
-    <rect x="58" y="34" width="3" height="1.5" rx="0.5" fill="#15803d" transform="rotate(45 58 34)" />
+    <!-- Fresh Green Basil Leaves & Sweet Corn / Herb Garnish -->
+    <ellipse cx="44" cy="36" rx="5.5" ry="3" fill="#22c55e" transform="rotate(-28 44 36)" />
+    <ellipse cx="26" cy="49" rx="4.5" ry="2.5" fill="#16a34a" transform="rotate(22 26 49)" />
+    <ellipse cx="61" cy="34" rx="4.5" ry="2.4" fill="#22c55e" transform="rotate(40 61 34)" />
+    <circle cx="40" cy="52" r="2.2" fill="#f59e0b" />
+    <circle cx="56" cy="54" r="2" fill="#f59e0b" />
   </g>
 </svg>
-
