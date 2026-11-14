@@ -1,15 +1,21 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import Order from "@/models/Order";
+import { generateNextToken } from "@/lib/tokens";
 import mongoose from "mongoose";
 
 const VALID_ORDER_STATUSES = [
+  "Pending Approval",
   "Pending",
+  "Accepted",
   "Preparing",
+  "Ready for Pickup",
   "Ready",
   "Completed",
   "Missed Pickup",
+  "Rejected",
   "Cancelled"
 ];
+
 const VALID_PAYMENT_STATUSES = ["Pending", "Paid"];
 
 export async function PUT(request, context) {
@@ -30,8 +36,79 @@ export async function PUT(request, context) {
     const data = await request.json();
     const updateData = {};
 
-    // Validate and update orderStatus
-    if (data.orderStatus !== undefined) {
+    // Vendor Authorization Check: Ensure only the associated canteen vendor can accept/reject
+    if (data.canteenId && data.canteenId !== "all") {
+      const orderCanteenId = existingOrder.canteenId || (existingOrder.items && existingOrder.items[0]?.canteenId);
+      if (orderCanteenId && orderCanteenId !== data.canteenId) {
+        return Response.json(
+          { message: "Unauthorized. This order belongs to a different canteen vendor." },
+          { status: 403 }
+        );
+      }
+    }
+
+    // =========================================================================
+    // VENDOR APPROVAL FLOW: ACCEPT ORDER & GENERATE TOKEN
+    // =========================================================================
+    if (data.action === "accept" || data.orderStatus === "Accepted") {
+      // Prevent duplicate acceptance
+      if (existingOrder.vendorApprovalStatus === "Accepted" && existingOrder.tokenNumber) {
+        return Response.json(
+          { message: `Order has already been accepted with Token #${existingOrder.tokenNumber}` },
+          { status: 400 }
+        );
+      }
+
+      // Prevent accepting an already rejected order
+      if (existingOrder.vendorApprovalStatus === "Rejected" || existingOrder.orderStatus === "Rejected") {
+        return Response.json(
+          { message: "Cannot accept an order that has already been rejected." },
+          { status: 400 }
+        );
+      }
+
+      // Generate sequential unique token number
+      const tokenNumber = await generateNextToken();
+
+      updateData.tokenNumber = tokenNumber;
+      updateData.vendorApprovalStatus = "Accepted";
+      updateData.orderStatus = "Accepted";
+      updateData.approvedAt = new Date();
+    }
+
+    // =========================================================================
+    // VENDOR REJECTION FLOW: REJECT ORDER (NO TOKEN GENERATED)
+    // =========================================================================
+    else if (data.action === "reject" || data.orderStatus === "Rejected") {
+      // Prevent rejecting an already accepted order
+      if (existingOrder.vendorApprovalStatus === "Accepted" && !data.adminOverride) {
+        return Response.json(
+          { message: "Cannot reject an order that has already been accepted and assigned a token." },
+          { status: 400 }
+        );
+      }
+
+      // Prevent duplicate rejection
+      if (existingOrder.vendorApprovalStatus === "Rejected" || existingOrder.orderStatus === "Rejected") {
+        return Response.json(
+          { message: "Order has already been rejected." },
+          { status: 400 }
+        );
+      }
+
+      const reason = (data.rejectionReason || data.cancellationReason || "Declined by kitchen").toString().trim();
+      updateData.vendorApprovalStatus = "Rejected";
+      updateData.orderStatus = "Rejected";
+      updateData.rejectedAt = new Date();
+      updateData.rejectionReason = reason;
+      updateData.cancellationReason = reason;
+      // Critical: tokenNumber remains null!
+    }
+
+    // =========================================================================
+    // REGULAR STATUS TRANSITIONS (Preparing, Ready, Completed, etc.)
+    // =========================================================================
+    else if (data.orderStatus !== undefined) {
       if (!VALID_ORDER_STATUSES.includes(data.orderStatus)) {
         return Response.json(
           {
@@ -41,36 +118,49 @@ export async function PUT(request, context) {
         );
       }
 
-      // Defined Cancellation Rule: Can only cancel if orderStatus is currently "Pending"
-      if (data.orderStatus === "Cancelled" && !data.adminOverride) {
-        if (existingOrder.orderStatus !== "Pending") {
+      // If moving directly to Preparing without prior acceptance, allocate token now
+      if (data.orderStatus === "Preparing" && !existingOrder.tokenNumber) {
+        updateData.tokenNumber = await generateNextToken();
+        updateData.vendorApprovalStatus = "Accepted";
+        updateData.approvedAt = new Date();
+      }
+
+      // Cancellation Rule: Student can only cancel if order is in Pending / Pending Approval
+      if ((data.orderStatus === "Cancelled" || data.orderStatus === "Rejected") && !data.adminOverride) {
+        const canCancel =
+          existingOrder.orderStatus === "Pending" ||
+          existingOrder.orderStatus === "Pending Approval" ||
+          existingOrder.vendorApprovalStatus === "Pending";
+        if (!canCancel) {
           return Response.json(
             {
-              message: `Order cannot be cancelled because it is already "${existingOrder.orderStatus}". Only Pending orders can be cancelled before kitchen preparation starts.`
+              message: `Order cannot be cancelled because it is already "${existingOrder.orderStatus}". Only orders waiting for kitchen approval can be cancelled.`
             },
             { status: 400 }
           );
         }
       }
 
-      if (data.cancellationReason !== undefined) {
-        updateData.cancellationReason = data.cancellationReason.toString().trim();
+      if (data.cancellationReason !== undefined || data.rejectionReason !== undefined) {
+        const reason = (data.cancellationReason || data.rejectionReason || "").toString().trim();
+        updateData.cancellationReason = reason;
+        updateData.rejectionReason = reason;
       }
 
-      // Feature: Unpaid Handover Protection Rule - Cannot handover until Paid!
+      // Unpaid Handover Protection Rule
       if (data.orderStatus === "Completed") {
         const finalPaymentStatus = data.paymentStatus || existingOrder.paymentStatus;
         if (finalPaymentStatus !== "Paid" && !data.bypassPaymentCheck) {
           return Response.json(
             {
-              message: `Payment Pending (₹${existingOrder.totalAmount}). Order cannot be handed over until payment is collected and marked as Paid.`
+              message: `Payment Pending (₹${existingOrder.totalAmount}). Order cannot be handed over until payment is marked as Paid.`
             },
             { status: 400 }
           );
         }
       }
 
-      // Feature: Secure Pickup Verification Code check
+      // Secure Pickup Verification Code check
       if (data.orderStatus === "Completed" && data.verifyPickupCode !== undefined && !data.bypassVerification) {
         const inputCode = data.verifyPickupCode.toString().trim();
         const expectedCode = existingOrder.pickupCode ? existingOrder.pickupCode.toString().trim() : "";
@@ -82,11 +172,13 @@ export async function PUT(request, context) {
         }
       }
 
-      // Feature: Missed Pickup & Auto-Requeue
+      // Missed Pickup & Auto-Requeue
       if (data.orderStatus === "Missed Pickup") {
         updateData.missedAt = new Date();
-      } else if (existingOrder.orderStatus === "Missed Pickup" && (data.orderStatus === "Ready" || data.orderStatus === "Preparing")) {
-        // Student rescheduled their pickup!
+      } else if (
+        existingOrder.orderStatus === "Missed Pickup" &&
+        (data.orderStatus === "Ready" || data.orderStatus === "Ready for Pickup" || data.orderStatus === "Preparing")
+      ) {
         updateData.rescheduleCount = (existingOrder.rescheduleCount || 0) + 1;
         updateData.missedAt = null;
       }
@@ -94,7 +186,7 @@ export async function PUT(request, context) {
       updateData.orderStatus = data.orderStatus;
     }
 
-    // Validate and update paymentStatus
+    // Payment Status update
     if (data.paymentStatus !== undefined) {
       if (!VALID_PAYMENT_STATUSES.includes(data.paymentStatus)) {
         return Response.json(
@@ -107,14 +199,13 @@ export async function PUT(request, context) {
       updateData.paymentStatus = data.paymentStatus;
     }
 
-    // Optional update paymentMethod
     if (data.paymentMethod !== undefined) {
       if (["Cash", "UPI"].includes(data.paymentMethod)) {
         updateData.paymentMethod = data.paymentMethod;
       }
     }
 
-    // Call Out Feature: Vendor announces token to student
+    // Call Out Feature
     if (data.callOut || data.action === "call_out") {
       updateData.calledAt = new Date();
       updateData.callCount = (existingOrder.callCount || 0) + 1;
@@ -128,7 +219,7 @@ export async function PUT(request, context) {
       updateData.estimatedPrepTime = parseInt(data.estimatedPrepTime, 10) || 5;
     }
 
-    // Rate completed order (1 to 5 stars) and update menu item ratings
+    // Rating
     if (data.rating !== undefined) {
       const stars = Math.min(5, Math.max(1, parseInt(data.rating, 10)));
       updateData.rating = stars;

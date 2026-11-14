@@ -47,7 +47,8 @@ export default function OrderSuccessOverlay({
     ? `~ ${order.estimatedPrepTime} min`
     : "~ 8 min";
 
-  const statusDisplay = order?.orderStatus === "Ready" ? "Ready" : "Preparing";
+  const statusDisplay =
+    order?.orderStatus || (order?.tokenNumber ? "Accepted" : "Pending Approval");
 
   return (
     <div
@@ -175,9 +176,13 @@ export default function OrderSuccessOverlay({
             </div>
 
             {/* Headings */}
-            <h2 className="confirm-title">Order Confirmed!</h2>
+            <h2 className="confirm-title">
+              {order.tokenNumber ? "Order Confirmed!" : "Order Placed • Waiting for Approval"}
+            </h2>
             <p className="confirm-subtitle">
-              Your order has been placed successfully.
+              {order.tokenNumber
+                ? "Your order has been placed and assigned a pickup token."
+                : "Sent to canteen vendor. Token will be issued upon acceptance."}
             </p>
 
             {/* Token & Estimated Wait 2-column Box */}
@@ -199,8 +204,15 @@ export default function OrderSuccessOverlay({
                   </svg>
                 </div>
                 <div className="confirm-col-text">
-                  <span className="confirm-col-label">Token No.</span>
-                  <span className="confirm-token-val">{order.tokenNumber}</span>
+                  <span className="confirm-col-label">
+                    {order.tokenNumber ? "Token No." : "Token Status"}
+                  </span>
+                  <span
+                    className="confirm-token-val"
+                    style={!order.tokenNumber ? { fontSize: "0.95rem", color: "#c2410c" } : undefined}
+                  >
+                    {order.tokenNumber || "⏳ Pending Approval"}
+                  </span>
                 </div>
               </div>
 
@@ -223,8 +235,10 @@ export default function OrderSuccessOverlay({
                   </svg>
                 </div>
                 <div className="confirm-col-text">
-                  <span className="confirm-col-label">Estimated Wait</span>
-                  <span className="confirm-wait-val">{waitDisplay}</span>
+                  <span className="confirm-col-label">Pickup Slot</span>
+                  <span className="confirm-wait-val" style={{ fontSize: "0.85rem", whiteSpace: "nowrap" }}>
+                    {order.pickupSlot || waitDisplay}
+                  </span>
                 </div>
               </div>
             </div>
@@ -269,6 +283,17 @@ export default function OrderSuccessOverlay({
                 <span className="confirm-total-label">Total</span>
                 <span className="confirm-total-amount">₹{order.totalAmount}</span>
               </div>
+            </div>
+
+            {/* Pickup Time Slot Row */}
+            <div className="confirm-meta-row slot-highlight-row" style={{ background: "#fff7ed", padding: "10px 14px", borderRadius: "10px", border: "1px solid #fed7aa", marginBottom: "8px" }}>
+              <div className="confirm-meta-label-wrap">
+                <span style={{ fontSize: "1.1rem" }}>🕒</span>
+                <span className="confirm-meta-text" style={{ color: "#9a3412", fontWeight: 700 }}>Pickup Time Slot</span>
+              </div>
+              <span className="confirm-counter-badge" style={{ background: "#ea580c", color: "#ffffff", borderColor: "#ea580c", fontWeight: 800 }}>
+                {order.pickupSlot || "Next Available Window"}
+              </span>
             </div>
 
             {/* Pickup Counter Row */}

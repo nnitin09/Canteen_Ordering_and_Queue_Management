@@ -81,11 +81,11 @@ export default function VendorLiveQueueBoard({
     return o.canteenId === selectedCanteen.id || !o.canteenId;
   });
 
-  const readyOrders = canteenOrders.filter((o) => o.orderStatus === "Ready");
-  const preparingOrders = canteenOrders.filter((o) => o.orderStatus === "Preparing");
-  const pendingOrders = canteenOrders.filter((o) => o.orderStatus === "Pending");
+  const readyOrders = canteenOrders.filter((o) => (o.orderStatus === "Ready" || o.orderStatus === "Ready for Pickup") && Boolean(o.tokenNumber));
+  const preparingOrders = canteenOrders.filter((o) => o.orderStatus === "Preparing" && Boolean(o.tokenNumber));
+  const pendingOrders = canteenOrders.filter((o) => (o.orderStatus === "Pending" || o.orderStatus === "Accepted") && Boolean(o.tokenNumber));
   const completedOrders = canteenOrders
-    .filter((o) => o.orderStatus === "Completed")
+    .filter((o) => o.orderStatus === "Completed" && Boolean(o.tokenNumber))
     .slice(0, 12);
 
   const getTimeElapsed = (dateString) => {

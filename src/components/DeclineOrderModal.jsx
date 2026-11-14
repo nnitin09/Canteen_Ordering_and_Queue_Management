@@ -51,10 +51,13 @@ export default function DeclineOrderModal({ isOpen, order, onClose, onConfirmDec
             <AlertTriangleIcon size={24} />
           </div>
           <div>
-            <div className="decline-pill">DECLINE ORDER REQUEST</div>
-            <h3 className="decline-title">Decline Token {order.tokenNumber}</h3>
+            <div className="decline-pill">REJECT / DECLINE ORDER REQUEST</div>
+            <h3 className="decline-title">
+              {order.tokenNumber ? `Decline Token ${order.tokenNumber}` : `Reject Order #${String(order._id || "").slice(-6).toUpperCase()}`}
+            </h3>
             <p className="decline-subtitle">
               Student: <strong>{order.studentName}</strong> • {order.items?.length || 0} item(s) • ₹{order.totalAmount}
+              {order.pickupSlot && ` • Slot: ${order.pickupSlot}`}
             </p>
           </div>
         </div>
@@ -118,7 +121,7 @@ export default function DeclineOrderModal({ isOpen, order, onClose, onConfirmDec
               className="btn btn-danger btn-confirm-decline"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Declining..." : "✕ Confirm Decline"}
+              {isSubmitting ? "Rejecting..." : "✕ Confirm Reject"}
             </button>
           </div>
         </form>

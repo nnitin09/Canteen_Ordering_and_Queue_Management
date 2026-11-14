@@ -3,34 +3,29 @@ import Order from "@/models/Order";
 import Menu from "@/models/Menu";
 import mongoose from "mongoose";
 
-// Helper function to safely generate the next unique token number
-async function generateNextToken() {
-  // Find the most recent order to determine the last token
-  const lastOrder = await Order.findOne().sort({ createdAt: -1 });
-
-  let nextNumber = 101;
-  if (lastOrder && lastOrder.tokenNumber) {
-    const match = lastOrder.tokenNumber.match(/\d+/);
-    if (match) {
-      nextNumber = parseInt(match[0], 10) + 1;
+// Self-healing check: ensure tokenNumber index in MongoDB is sparse so null values do not collide
+let isIndexChecked = false;
+async function ensureSparseTokenIndex() {
+  if (isIndexChecked) return;
+  try {
+    const col = Order.collection;
+    const indexes = await col.indexes();
+    const tokenIdx = indexes.find((i) => i.name === "tokenNumber_1" || (i.key && i.key.tokenNumber));
+    if (tokenIdx && !tokenIdx.sparse) {
+      await col.dropIndex(tokenIdx.name).catch(() => {});
+      await col.createIndex({ tokenNumber: 1 }, { unique: true, sparse: true }).catch(() => {});
     }
+    isIndexChecked = true;
+  } catch (e) {
+    // Silently continue if index is already sparse or in memory
   }
-
-  // Ensure uniqueness in case of race condition or gaps
-  let candidateToken = `T-${nextNumber}`;
-  let exists = await Order.findOne({ tokenNumber: candidateToken });
-  while (exists) {
-    nextNumber += 1;
-    candidateToken = `T-${nextNumber}`;
-    exists = await Order.findOne({ tokenNumber: candidateToken });
-  }
-
-  return candidateToken;
 }
 
 export async function GET(request) {
   try {
     await connectToDatabase();
+    await ensureSparseTokenIndex();
+
     const { searchParams } = new URL(request.url);
     const isStudent = searchParams.get("student") === "true";
     const phone = searchParams.get("phone");
@@ -39,6 +34,8 @@ export async function GET(request) {
     const ids = searchParams.get("ids");
     const canteen = searchParams.get("canteen");
     const canteenId = searchParams.get("canteenId");
+    const status = searchParams.get("status") || searchParams.get("orderStatus");
+    const approvalStatus = searchParams.get("approvalStatus");
 
     let query = {};
     const conditions = [];
@@ -75,9 +72,40 @@ export async function GET(request) {
       }
     }
 
-    // If specific student conditions are provided, filter by them
+    // Specific student conditions filter
     if (conditions.length > 0) {
       query.$or = conditions;
+    }
+
+    // Status Filter (e.g. "Pending Approval", "Accepted", "Preparing", etc.)
+    if (status && status !== "all") {
+      let statusQuery;
+      if (status === "Pending Approval" || status === "pending_approval") {
+        statusQuery = {
+          $or: [
+            { orderStatus: "Pending Approval" },
+            { orderStatus: "Pending", tokenNumber: null },
+            { vendorApprovalStatus: "Pending" }
+          ]
+        };
+      } else if (status === "Ready") {
+        statusQuery = { orderStatus: { $in: ["Ready", "Ready for Pickup"] } };
+      } else if (status === "Cancelled" || status === "Rejected") {
+        statusQuery = { orderStatus: { $in: ["Cancelled", "Rejected"] } };
+      } else {
+        statusQuery = { orderStatus: status };
+      }
+
+      if (query.$or) {
+        query = { $and: [{ $or: query.$or }, statusQuery] };
+      } else {
+        query = { ...query, ...statusQuery };
+      }
+    }
+
+    // Approval status filter
+    if (approvalStatus && approvalStatus !== "all") {
+      query.vendorApprovalStatus = approvalStatus;
     }
 
     // Scoped Canteen Filter (supports canteenId and canteenName)
@@ -98,9 +126,10 @@ export async function GET(request) {
         canteenConditions.push({ "items.canteenName": regex });
       }
 
-      if (query.$or) {
-        query.$and = [{ $or: query.$or }, { $or: canteenConditions }];
-        delete query.$or;
+      if (query.$and) {
+        query.$and.push({ $or: canteenConditions });
+      } else if (query.$or) {
+        query = { $and: [{ $or: query.$or }, { $or: canteenConditions }] };
       } else {
         query.$or = canteenConditions;
       }
@@ -110,9 +139,10 @@ export async function GET(request) {
         { canteenName: canteenRegex },
         { "items.canteenName": canteenRegex }
       ];
-      if (query.$or) {
-        query.$and = [{ $or: query.$or }, { $or: canteenConditions }];
-        delete query.$or;
+      if (query.$and) {
+        query.$and.push({ $or: canteenConditions });
+      } else if (query.$or) {
+        query = { $and: [{ $or: query.$or }, { $or: canteenConditions }] };
       } else {
         query.$or = canteenConditions;
       }
@@ -132,11 +162,32 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     await connectToDatabase();
+    await ensureSparseTokenIndex();
+
     const data = await request.json();
 
-    const { studentName, studentEmail, studentPhone, items, paymentMethod, remarks, canteenId, canteenName, counterName } = data;
+    const {
+      studentName,
+      studentEmail,
+      studentPhone,
+      items,
+      paymentMethod,
+      remarks,
+      canteenId,
+      canteenName,
+      counterName,
+      pickupSlot
+    } = data;
 
-    // Validate student name
+    // 1. Mandatory Pickup Time Slot Selection Validation
+    if (!pickupSlot || typeof pickupSlot !== "string" || !pickupSlot.trim()) {
+      return Response.json(
+        { message: "Please select a preferred pickup time slot before placing your order." },
+        { status: 400 }
+      );
+    }
+
+    // 2. Validate student name
     if (!studentName || studentName.trim() === "") {
       return Response.json(
         { message: "Student name is required to place an order" },
@@ -144,7 +195,7 @@ export async function POST(request) {
       );
     }
 
-    // Validate items array
+    // 3. Validate items array
     if (!items || !Array.isArray(items) || items.length === 0) {
       return Response.json(
         { message: "Order must contain at least one item" },
@@ -152,7 +203,7 @@ export async function POST(request) {
       );
     }
 
-    // Calculate total on the backend using actual prices from the database
+    // 4. Calculate total on the backend using actual prices from the database
     let calculatedTotal = 0;
     const verifiedOrderItems = [];
 
@@ -173,11 +224,12 @@ export async function POST(request) {
       }
 
       const orderCanteenId = item.canteenId || canteenId || "foodcourt-34";
-      const isSoldOutAtCanteen = Array.isArray(menuItem.soldOutCanteens) && menuItem.soldOutCanteens.includes(orderCanteenId);
+      const isSoldOutAtCanteen =
+        Array.isArray(menuItem.soldOutCanteens) && menuItem.soldOutCanteens.includes(orderCanteenId);
       if (!menuItem.available || isSoldOutAtCanteen) {
         return Response.json(
           {
-            message: `"${menuItem.name}" abhi out-of-stock / unavailable ho gaya hai. Cart ko preserve rakha gaya hai taaki aap item change ya remove kar sakein.`,
+            message: `"${menuItem.name}" is currently sold out at this canteen. Please adjust your cart.`,
             unavailableItem: menuItem.name,
             preserveCart: true
           },
@@ -193,7 +245,8 @@ export async function POST(request) {
         );
       }
 
-      const effectivePrice = typeof item.price === "number" && item.price > 0 ? item.price : menuItem.price;
+      const effectivePrice =
+        typeof item.price === "number" && item.price > 0 ? item.price : menuItem.price;
       const itemTotal = effectivePrice * quantity;
       calculatedTotal += itemTotal;
 
@@ -209,9 +262,6 @@ export async function POST(request) {
       });
     }
 
-    // Safe unique token number generation
-    const tokenNumber = await generateNextToken();
-
     // Default payment method validation
     const validPaymentMethods = ["Cash", "UPI"];
     const selectedPaymentMethod = validPaymentMethods.includes(paymentMethod)
@@ -221,30 +271,34 @@ export async function POST(request) {
     // Generate a secure 4-digit secret pickup verification code
     const pickupCode = Math.floor(1000 + Math.random() * 9000).toString();
 
-    // Intelligent estimated preparation time calculation based on active kitchen load
+    // Intelligent estimated preparation time calculation
     const activeOrdersAhead = await Order.countDocuments({
-      orderStatus: { $in: ["Pending", "Preparing"] }
+      orderStatus: { $in: ["Pending", "Pending Approval", "Accepted", "Preparing"] }
     });
     const estimatedPrepTime = Math.max(4, activeOrdersAhead * 3 + 3);
 
-    const resolvedCanteenId = canteenId || (verifiedOrderItems[0]?.canteenId) || "foodcourt-34";
+    const resolvedCanteenId = canteenId || verifiedOrderItems[0]?.canteenId || "foodcourt-34";
 
+    // CRITICAL: Token number is NOT generated now.
+    // It is assigned ONLY AFTER vendor approval!
     const newOrder = await Order.create({
-      tokenNumber,
+      tokenNumber: null, // Token allocated only after vendor acceptance
       studentName: studentName.trim(),
       studentEmail: studentEmail ? studentEmail.trim().toLowerCase() : "",
       studentPhone: studentPhone ? studentPhone.trim() : "",
       remarks: remarks ? remarks.trim() : "",
       items: verifiedOrderItems,
       totalAmount: calculatedTotal,
-      orderStatus: "Pending",
+      orderStatus: "Pending Approval",
+      vendorApprovalStatus: "Pending",
+      pickupSlot: pickupSlot.trim(),
       pickupCode,
       canteenId: resolvedCanteenId,
       canteenName: canteenName ? canteenName.trim() : "Food Court near 34 Block",
       counterName: counterName ? counterName.trim() : "Counter 1",
       estimatedPrepTime,
       paymentMethod: selectedPaymentMethod,
-      paymentStatus: "Pending"
+      paymentStatus: selectedPaymentMethod === "UPI" && data.paymentStatus === "Paid" ? "Paid" : "Pending"
     });
 
     return Response.json(newOrder, { status: 201 });

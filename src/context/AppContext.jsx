@@ -217,7 +217,7 @@ export function AppProvider({ children }) {
     setCart((prev) => prev.filter((i) => i.menuItemId !== menuItemId));
   };
 
-  const submitGlobalOrder = async (paidOnline = false) => {
+  const submitGlobalOrder = async (paidOnline = false, extraDetails = {}) => {
     try {
       setSubmittingOrder(true);
       setIsUpiModalOpen(false);
@@ -234,11 +234,12 @@ export function AppProvider({ children }) {
         canteens[0];
 
       const orderPayload = {
-        studentName: studentProfile?.name || "Student",
+        studentName: (extraDetails?.studentName || studentProfile?.name || "Student").trim(),
         studentEmail: studentProfile?.email || "",
-        studentPhone: studentProfile?.phone || "",
-        paymentMethod: cartPaymentMethod,
-        remarks: cartRemarks.trim(),
+        studentPhone: (extraDetails?.studentPhone || studentProfile?.phone || "").trim(),
+        paymentMethod: extraDetails?.paymentMethod || cartPaymentMethod,
+        remarks: (extraDetails?.remarks !== undefined ? extraDetails.remarks : cartRemarks).trim(),
+        pickupSlot: (extraDetails?.pickupSlot || "Immediate (Standard)").trim(),
         canteenId: firstValidCanteen?.id || "foodcourt-34",
         canteenName:
           canteenSummary && !canteenSummary.includes("All Canteens")

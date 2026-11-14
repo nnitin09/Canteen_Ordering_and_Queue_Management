@@ -546,6 +546,7 @@ export default function StudentPage({
       const finalPhone = (extraDetails?.studentPhone || studentPhone || studentProfile?.phone || "").trim();
       const finalRemarks = extraDetails?.remarks !== undefined ? extraDetails.remarks : remarks;
       const finalPayment = extraDetails?.paymentMethod || (paidOnline ? "UPI" : paymentMethod);
+      const finalPickupSlot = (extraDetails?.pickupSlot || "Immediate (Standard)").trim();
 
       const orderPayload = {
         studentName: finalName,
@@ -553,6 +554,7 @@ export default function StudentPage({
         studentPhone: finalPhone,
         paymentMethod: finalPayment,
         remarks: finalRemarks ? finalRemarks.trim() : "",
+        pickupSlot: finalPickupSlot,
         canteenId: firstValidCanteen?.id || "foodcourt-34",
         canteenName: canteenSummary && !canteenSummary.includes("All Canteens") ? canteenSummary : (firstValidCanteen?.name || "Food Court near 34 Block"),
         counterName: counterSummary || firstValidCanteen?.counter || "Counter 1 (Fast Dispatch)",
@@ -595,7 +597,11 @@ export default function StudentPage({
         setLastPlacedOrder(data);
         setSubmittingOrder(false);
         if (setIsMobileCartOpen) setIsMobileCartOpen(false);
-        setSuccessMessage(`Order Placed! Your Pickup Token is ${data.tokenNumber}`);
+        setSuccessMessage(
+          data.tokenNumber
+            ? `Order Placed! Your Pickup Token is ${data.tokenNumber}`
+            : `Order Placed! Sent for kitchen approval • Pickup Slot: ${data.pickupSlot || finalPickupSlot}`
+        );
         setCart([]);
         setRemarks("");
         try {

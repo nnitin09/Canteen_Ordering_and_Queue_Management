@@ -2,17 +2,33 @@ export default function StatusBadge({ status, type = "order" }) {
   let badgeClass = "badge";
 
   if (type === "order") {
-    if (status === "Pending") badgeClass += " badge-pending";
-    else if (status === "Preparing") badgeClass += " badge-preparing";
-    else if (status === "Ready") badgeClass += " badge-ready";
-    else if (status === "Completed") badgeClass += " badge-completed";
-    else if (status === "Missed Pickup") badgeClass += " badge-missed";
-    else if (status === "Cancelled") badgeClass += " badge-cancelled";
+    let displayPrefix = "Order: ";
+    if (status === "Pending Approval") {
+      badgeClass += " badge-pending-approval";
+      displayPrefix = "Approval: ";
+    } else if (status === "Pending") {
+      badgeClass += " badge-pending";
+    } else if (status === "Accepted") {
+      badgeClass += " badge-accepted";
+    } else if (status === "Preparing") {
+      badgeClass += " badge-preparing";
+    } else if (status === "Ready" || status === "Ready for Pickup") {
+      badgeClass += " badge-ready";
+    } else if (status === "Completed") {
+      badgeClass += " badge-completed";
+    } else if (status === "Missed Pickup") {
+      badgeClass += " badge-missed";
+    } else if (status === "Rejected") {
+      badgeClass += " badge-rejected";
+      displayPrefix = "Status: ";
+    } else if (status === "Cancelled") {
+      badgeClass += " badge-cancelled";
+    }
 
     return (
       <span className={badgeClass} title={`Kitchen Order Status: ${status}`}>
         <span className="badge-dot"></span>
-        <span className="badge-category-prefix">Order: </span>
+        <span className="badge-category-prefix">{displayPrefix}</span>
         <span className="badge-value-text">{status}</span>
       </span>
     );

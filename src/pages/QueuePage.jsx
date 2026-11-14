@@ -303,10 +303,10 @@ export default function QueuePage({ setActiveTab, isVendorView = false, onVendor
     }
   };
 
-  const pendingOrders = orders.filter((o) => o.orderStatus === "Pending");
-  const preparingOrders = orders.filter((o) => o.orderStatus === "Preparing");
-  const readyOrders = orders.filter((o) => o.orderStatus === "Ready");
-  const completedOrders = orders.filter((o) => o.orderStatus === "Completed").slice(0, 10);
+  const pendingOrders = orders.filter((o) => (o.orderStatus === "Pending" || o.orderStatus === "Accepted") && Boolean(o.tokenNumber));
+  const preparingOrders = orders.filter((o) => o.orderStatus === "Preparing" && Boolean(o.tokenNumber));
+  const readyOrders = orders.filter((o) => (o.orderStatus === "Ready" || o.orderStatus === "Ready for Pickup") && Boolean(o.tokenNumber));
+  const completedOrders = orders.filter((o) => o.orderStatus === "Completed" && Boolean(o.tokenNumber)).slice(0, 10);
 
   // Find user's tracked order if search token is entered
   const trackedOrder = searchToken.trim()
@@ -364,17 +364,22 @@ export default function QueuePage({ setActiveTab, isVendorView = false, onVendor
     return null;
   };
 
-  // Calculate step progress for tracked order (0 to 4)
+  // Calculate step progress for tracked order (0 to 5)
   const getProgressStep = (status) => {
     switch (status) {
+      case "Pending Approval":
       case "Pending":
         return 1;
-      case "Preparing":
+      case "Accepted":
         return 2;
-      case "Ready":
+      case "Preparing":
         return 3;
-      case "Completed":
+      case "Ready":
+      case "Ready for Pickup":
+      case "Missed Pickup":
         return 4;
+      case "Completed":
+        return 5;
       default:
         return 0;
     }
@@ -571,7 +576,7 @@ export default function QueuePage({ setActiveTab, isVendorView = false, onVendor
                   </div>
 
                   <div className="tracked-status-callout">
-                    {trackedOrder.orderStatus === "Ready" && (
+                    {(trackedOrder.orderStatus === "Ready" || trackedOrder.orderStatus === "Ready for Pickup") && (
                       <div className="status-notice notice-ready">
                         <span className="notice-icon">🎉</span>
                         <div>
@@ -589,12 +594,41 @@ export default function QueuePage({ setActiveTab, isVendorView = false, onVendor
                         </div>
                       </div>
                     )}
-                    {trackedOrder.orderStatus === "Pending" && (
+                    {trackedOrder.orderStatus === "Accepted" && (
+                      <div className="status-notice notice-preparing" style={{ background: "#eff6ff", borderColor: "#bfdbfe" }}>
+                        <span className="notice-icon">✓</span>
+                        <div>
+                          <strong className="notice-title" style={{ color: "#1d4ed8" }}>ACCEPTED BY VENDOR (TOKEN #{trackedOrder.tokenNumber})</strong>
+                          <p className="notice-hindi" style={{ color: "#1e40af" }}>Vendor ne aapka order accept kar liya hai! Jald kitchen me preparation shuru hogi.</p>
+                        </div>
+                      </div>
+                    )}
+                    {(trackedOrder.orderStatus === "Pending Approval" || (trackedOrder.orderStatus === "Pending" && !trackedOrder.tokenNumber)) && (
+                      <div className="status-notice notice-pending" style={{ background: "#fffbeb", borderColor: "#fde68a" }}>
+                        <span className="notice-icon">⏳</span>
+                        <div>
+                          <strong className="notice-title" style={{ color: "#b45309" }}>AWAITING VENDOR APPROVAL</strong>
+                          <p className="notice-hindi" style={{ color: "#92400e" }}>Aapka order vendor review ke liye bheja gaya hai. Accept hote hi token generate hoga.</p>
+                        </div>
+                      </div>
+                    )}
+                    {trackedOrder.orderStatus === "Pending" && trackedOrder.tokenNumber && (
                       <div className="status-notice notice-pending">
                         <span className="notice-icon">⏳</span>
                         <div>
                           <strong className="notice-title">IN QUEUE (NEXT IN LINE)</strong>
                           <p className="notice-hindi">Aapka order line me hai. Chef jald hi banana shuru karenge.</p>
+                        </div>
+                      </div>
+                    )}
+                    {trackedOrder.orderStatus === "Rejected" && (
+                      <div className="status-notice notice-missed" style={{ background: "#fef2f2", borderColor: "#fecaca" }}>
+                        <span className="notice-icon">✕</span>
+                        <div>
+                          <strong className="notice-title" style={{ color: "#b91c1c" }}>ORDER REJECTED BY VENDOR</strong>
+                          <p className="notice-hindi" style={{ color: "#991b1b" }}>
+                            {trackedOrder.rejectionReason || "Kitchen unable to process"}. Koi token generate nahi hua.
+                          </p>
                         </div>
                       </div>
                     )}

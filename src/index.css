@@ -6613,15 +6613,34 @@ h1, h2, h3, h4, .brand-title, .token-huge-num, .token-display-ready, .token-disp
 }
 
 /* Status themes for cards */
+.kds-card.status-pending-approval,
 .kds-card.status-pending {
   border-color: #f97316;
   box-shadow: 0 4px 18px rgba(249, 115, 22, 0.15);
 }
 
+.kds-card.status-pending-approval::before,
 .kds-card.status-pending::before {
-  content: "⚡ INCOMING ORDER REQUEST";
+  content: "⚡ INCOMING ORDER REQUEST (REQUIRES APPROVAL)";
   display: block;
   background: #ea580c;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-align: center;
+  padding: 4px 8px;
+}
+
+.kds-card.status-accepted {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+}
+
+.kds-card.status-accepted::before {
+  content: "✓ ORDER ACCEPTED (READY TO PREPARE)";
+  display: block;
+  background: #2563eb;
   color: #ffffff;
   font-size: 0.68rem;
   font-weight: 800;
@@ -6666,6 +6685,52 @@ h1, h2, h3, h4, .brand-title, .token-huge-num, .token-display-ready, .token-disp
   font-family: 'Outfit', sans-serif;
   letter-spacing: -0.02em;
   line-height: 1;
+}
+
+.kds-token-badge.pending-approval {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #ea580c;
+  background: #fff7ed;
+  border: 1.5px dashed #fdba74;
+  padding: 4px 10px;
+  border-radius: 8px;
+  display: inline-block;
+  letter-spacing: 0.02em;
+}
+
+.kds-slot-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.kds-slot-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.kds-slot-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.kds-slot-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #9a3412;
+  letter-spacing: 0.05em;
+}
+
+.kds-slot-value {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #c2410c;
 }
 
 .kds-meta-right {
@@ -16841,4 +16906,171 @@ h1, h2, h3, h4, .brand-title, .token-huge-num, .token-display-ready, .token-disp
   background: #fee2e2;
   border-color: #fca5a5;
   transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Time Slot Picker Component Styles (Student Ordering & Checkout)
+   ========================================================================== */
+.timeslot-picker-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 12px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease;
+}
+
+.timeslot-picker-card.has-error {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.timeslot-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.timeslot-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff7ed;
+  border: 1px solid #ffedd5;
+  color: #ea580c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.timeslot-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.timeslot-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.timeslot-required-tag {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #dc2626;
+  background: #fee2e2;
+  padding: 1px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.timeslot-desc {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.timeslot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.timeslot-chip {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: center;
+  user-select: none;
+}
+
+.timeslot-chip:hover {
+  border-color: #ea580c;
+  background: #fff7ed;
+  transform: translateY(-1px);
+}
+
+.timeslot-chip.selected {
+  background: #ea580c;
+  border-color: #ea580c;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.28);
+}
+
+.timeslot-time {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: -0.01em;
+}
+
+.timeslot-chip.selected .timeslot-time {
+  color: #ffffff;
+}
+
+.timeslot-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.timeslot-chip.selected .timeslot-tag {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.timeslot-selected-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.timeslot-error {
+  color: #dc2626;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Badge styles for new statuses */
+.badge-pending-approval {
+  background: #fff7ed !important;
+  color: #c2410c !important;
+  border: 1px solid #fdba74 !important;
+}
+
+.badge-accepted {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #93c5fd !important;
+}
+
+.badge-rejected {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  border: 1px solid #fca5a5 !important;
 }
